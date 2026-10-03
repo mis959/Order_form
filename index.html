@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Order Entry Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --border-gray: #e5e7eb;
+            --danger: #ef4444;
+            --required-bg: #f5f3ff;
+            --required-border: #c7d2fe;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 1360px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 44px 52px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            animation: fadeInUp 0.4s ease;
+            position: relative;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 30px;
+        }
+
+        h3 {
+            margin-top: 30px;
+            color: var(--text-dark);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-gray);
+            padding-bottom: 10px;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px 26px;
+        }
+
+        .form-group {
+            margin-bottom: 6px;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 16px;
+            font-size: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-gray);
+            background: white;
+            transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s, background-color 0.2s;
+        }
+
+        input:hover:not([readonly]):not(:focus),
+        select:hover:not(:focus) {
+            border-color: #a5b4fc;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            transform: translateY(-1px);
+        }
+
+        input[readonly] {
+            background-color: #f9fafb;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Highlight fields the user actually needs to fill in */
+        input[required]:not([readonly]),
+        select[required] {
+            background-color: var(--required-bg);
+            border: 1.5px solid var(--required-border);
+        }
+
+        input[required]:not([readonly]):focus,
+        select[required]:focus {
+            background-color: #ffffff;
+        }
+
+        input[required]:not([readonly])::placeholder {
+            color: #8b87d6;
+        }
+
+        .form-group label[data-required]::after,
+        .itemRow-main label[data-required]::after,
+        .itemRow-details label[data-required]::after {
+            content: " *";
+            color: var(--danger);
+        }
+
+        .btn {
+            cursor: pointer;
+            border: none;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+        }
+
+        .primary-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--primary-hover), #4338ca);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45);
+        }
+
+        .primary-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .primary-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .add-btn {
+            background-color: #fff;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            margin-bottom: 20px;
+            width: auto;
+        }
+
+        .add-btn:hover {
+            background-color: var(--primary);
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+
+        /* ---- Refresh bar (top-right) ---- */
+        .refresh-bar {
+            position: absolute;
+            top: 24px;
+            right: 28px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .refresh-btn {
+            background: #fff;
+            color: var(--primary);
+            border: 1.5px solid var(--required-border);
+            padding: 8px 14px;
+            font-size: 13px;
+            border-radius: 8px;
+            width: auto;
+        }
+
+        .refresh-btn:hover:not(:disabled) {
+            background: var(--required-bg);
+            border-color: var(--primary);
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 900px) {
+            .refresh-bar {
+                position: static;
+                justify-content: flex-end;
+                margin-bottom: 12px;
+            }
+        }
+
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .itemRow {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            background: white;
+            border: 1px solid var(--border-gray);
+            padding: 22px 24px;
+            border-radius: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .itemRow:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+            border-color: #c7d2fe;
+        }
+
+        .itemRow-main {
+            display: grid;
+            grid-template-columns: minmax(220px, 2fr) minmax(100px, 0.8fr) minmax(150px, 1fr) auto;
+            gap: 18px;
+            align-items: end;
+        }
+
+        .itemRow-section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 0 0 12px 0;
+        }
+
+        .itemRow-details-wrap {
+            border-top: 1px solid var(--border-gray);
+            padding-top: 16px;
+        }
+
+        .itemRow-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px 18px;
+        }
+
+        .itemRow-details label,
+        .itemRow-main label {
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .itemRow-details input,
+        .itemRow-main input {
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+
+        .remove-btn {
+            background: #fee2e2;
+            color: var(--danger);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s, transform 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            width: 44px;
+        }
+
+        .remove-btn:hover {
+            background: #fecaca;
+            transform: scale(1.06);
+        }
+
+        #qtyTotal {
+            text-align: right;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            min-height: 22px;
+            margin-top: 10px;
+        }
+
+        #loadStatus {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            min-height: 18px;
+        }
+
+        @media (max-width: 1100px) {
+            .itemRow-details {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .itemRow-main {
+                grid-template-columns: minmax(200px, 2fr) minmax(90px, 0.8fr) minmax(130px, 1fr) auto;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .form-container {
+                padding: 28px 20px;
+            }
+
+            .itemRow-main {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .itemRow-main>*:first-child {
+                grid-column: 1 / -1;
+            }
+
+            .itemRow-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .remove-btn {
+                height: 44px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="form-container">
+        <div class="refresh-bar">
+            <button type="button" class="btn refresh-btn" id="refreshItemsBtn" onclick="refreshItemsAndSchemas()" title="Reload Item Details sheet (items + schemas) without refreshing the page">⟳ Items</button>
+            <button type="button" class="btn refresh-btn" id="refreshDealersBtn" onclick="refreshDealersAndSales()" title="Reload Dealer Data sheet (dealers + sales executives) without refreshing the page">⟳ Dealers</button>
+        </div>
+        <form id="orderForm">
+            <h2>Order Entry Form</h2>
+            <div class="subtitle">Fields highlighted in purple are required — please fill them in</div>
+            <div id="loadStatus"></div>
+
+            <div class="grid-form">
+                <div class="form-group">
+                    <label for="orderNumber" data-required>Order Number</label>
+                    <input type="text" id="orderNumber" required placeholder="Enter Order #">
+                </div>
+
+                <div class="form-group">
+                    <label for="orderDate" data-required>Order Date</label>
+                    <input type="date" id="orderDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientName" data-required>Client Name</label>
+                    <input list="clientNameList" id="clientName" required placeholder="Search by Client Name...">
+                    <datalist id="clientNameList"></datalist>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientCode">Client Code</label>
+                    <input type="text" id="clientCode" readonly placeholder="Auto-filled">
+                </div>
+
+                <div class="form-group">
+                    <label for="clientType">Category</label>
+                    <input type="text" id="clientType" readonly placeholder="Auto-filled">
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneNo">Phone No.</label>
+                    <input type="text" id="phoneNo" readonly placeholder="Auto-filled">
+                </div>
+
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <input type="text" id="state" readonly placeholder="Auto-filled">
+                </div>
+
+                <div class="form-group">
+                    <label for="district">District</label>
+                    <input type="text" id="district" readonly placeholder="Auto-filled">
+                </div>
+
+                <div class="form-group">
+                    <label for="creditDays">Credit Period</label>
+                    <input type="text" id="creditDays" readonly placeholder="Auto-filled">
+                </div>
+
+                <div class="form-group">
+                    <label for="modeOfPayment" data-required>Mode of Payment</label>
+                    <input list="paymentModes" id="modeOfPayment" required placeholder="Select or Type Payment Mode">
+                    <datalist id="paymentModes">
+                        <option value="Full">
+                        <option value="Advance">
+                        <option value="Credit">
+                    </datalist>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address *</label>
+                    <input type="text" id="address" readonly placeholder="Auto-filled">
+                </div>
+
+                <div class="form-group">
+                    <label for="leadTime" data-required>Lead Time (days)</label>
+                    <input type="number" id="leadTime" required min="1" placeholder="e.g. 7">
+                </div>
+
+                <div class="form-group">
+                    <label for="salesExecutive">Sales Executive *</label>
+                    <input list="salesExecList" id="salesExecutive" readonly placeholder="Auto-filled">
+                    <datalist id="salesExecList"></datalist>
+                </div>
+
+                <div class="form-group">
+                    <label for="parentDealerName">Parent Dealer Name</label>
+                    <input type="text" id="parentDealerName" readonly placeholder="Auto-filled">
+                </div>
+
+                <div class="form-group">
+                    <label for="parentDealerCode">Parent Dealer Code</label>
+                    <input type="text" id="parentDealerCode" readonly placeholder="Auto-filled">
+                </div>
+
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" readonly placeholder="Auto-filled">
+                </div>
+
+                <div class="form-group">
+                    <label for="region">Region</label>
+                    <input type="text" id="region" readonly placeholder="Auto-filled">
+                </div>
+
+                <div class="form-group">
+                    <label for="dispatchDays">Dispatch Days</label>
+                    <input type="text" id="dispatchDays" readonly placeholder="Auto-filled">
+                </div>
+            </div>
+
+            <h3>Order Items</h3>
+            <div id="items" class="items-list"></div>
+
+            <div id="qtyTotal"></div>
+
+            <datalist id="itemListData"></datalist>
+            <datalist id="schemaListData"></datalist>
+
+            <div style="margin-top: 10px;">
+                <button type="button" class="btn add-btn" onclick="addItem()">+ Add Item</button>
+            </div>
+
+            <button type="button" class="btn primary-btn" id="submitBtn" onclick="submitForm()">Submit Order</button>
+        </form>
+    </div>
+
+    <script>
+        // ============================================================
+        // Apni Apps Script Web App ki "/exec" URL yahan paste karo
+        // (Deploy > New deployment > Web app ke baad milegi)
+        // ============================================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzuoQpkBfV9y5kwqvxxzTzdM1epgp8P1xFMwiebGQ1OMlZbaEKfH8r9PYkgKC3gBgMjxg/exec";
+
+        let itemData = [];
+        let schemaList = [];
+        let clientData = [];
+
+        // ---------- Backend call helpers (google.script.run ki jagah fetch) ----------
+
+        async function callGet(action) {
+            const res = await fetch(`${SCRIPT_URL}?action=${encodeURIComponent(action)}`, {
+                method: 'GET'
+            });
+            const json = await res.json();
+            if (!json.success) throw new Error(json.error || 'Unknown error');
+            return json.data;
+        }
+
+        async function callPost(action, payload) {
+            // Content-Type: text/plain use kiya hai taaki browser CORS preflight
+            // (OPTIONS request) na bheje - Apps Script Web Apps OPTIONS handle nahi karte.
+            const res = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action, payload })
+            });
+            const json = await res.json();
+            if (!json.success) throw new Error(json.error || 'Unknown error');
+            return json;
+        }
+
+        // clientData row layout (0-indexed, matches Dealer Data columns B:P):
+        // 0 Party Code | 1 Party's Name | 2 Address | 3 City | 4 District | 5 STATE
+        // 6 Region | 7 Under (Sales Exec) | 8 Category | 9 Credit Period | 10 Dispatch Days
+        // 11 Phone No. | 12 Parent's Dealer | 13 Parent's Code | 14 Status
+        function buildClientLabel(row) {
+            const name     = String(row[1] || '').trim();
+            const district = String(row[4] || '').trim();
+            const under    = String(row[7] || '').trim();
+            const parent   = String(row[12] || '').trim();
+            let label = name + ' (' + district + ' - ' + under;
+            if (parent) label += ' - ' + parent;
+            label += ')';
+            return label;
+        }
+
+        function updateTotalQty() {
+            const allQty = Array.from(document.querySelectorAll('.itemRow [name=qty]'))
+                .map(inp => Number(inp.value) || 0);
+            const total = allQty.reduce((sum, v) => sum + v, 0);
+            const el = document.getElementById('qtyTotal');
+            if (el) el.textContent = total > 0 ? 'Total Quantity: ' + total : '';
+        }
+
+        function setStatus(msg, isError) {
+            const el = document.getElementById('loadStatus');
+            if (!el) return;
+            el.textContent = msg;
+            el.style.color = isError ? 'var(--danger)' : 'var(--text-muted)';
+        }
+
+        async function initialize() {
+            document.getElementById('orderDate').valueAsDate = new Date();
+
+            if (!SCRIPT_URL || SCRIPT_URL.includes('PASTE_YOUR')) {
+                setStatus('SCRIPT_URL set nahi hai — index.html me apna Apps Script Web App URL daalo.', true);
+                return;
+            }
+
+            setStatus('Loading data...', false);
+
+            try {
+                const [items, salesPersons, schemas, clients] = await Promise.all([
+                    callGet('getItemData'),
+                    callGet('getSalesPersons'),
+                    callGet('getSchemas'),
+                    callGet('getClientData')
+                ]);
+
+                setItemData(items);
+                setSalesPersons(salesPersons);
+                setSchemaList(schemas);
+                setClientData(clients);
+
+                setStatus('', false);
+            } catch (err) {
+                setStatus('Data load failed: ' + err.message, true);
+            }
+
+            document.getElementById('clientName').addEventListener('input', function () {
+                const typed = this.value.trim();
+                const selected = clientData.find(r => buildClientLabel(r) === typed);
+
+                if (selected) {
+                    document.getElementById('clientCode').value       = selected[0] || '';
+                    document.getElementById('address').value          = selected[2] || '';
+                    document.getElementById('city').value             = selected[3] || '';
+                    document.getElementById('district').value         = selected[4] || '';
+                    document.getElementById('state').value            = selected[5] || '';
+                    document.getElementById('region').value           = selected[6] || '';
+                    document.getElementById('dispatchDays').value     = selected[10] || '';
+                    document.getElementById('salesExecutive').value   = selected[7] || '';
+                    document.getElementById('clientType').value       = selected[8] || '';
+                    document.getElementById('creditDays').value       = selected[9] || '';
+                    document.getElementById('phoneNo').value          = selected[11] || '';
+                    document.getElementById('parentDealerName').value = selected[12] || '';
+                    document.getElementById('parentDealerCode').value = selected[13] || '';
+                } else {
+                    document.getElementById('clientCode').value       = '';
+                    document.getElementById('address').value          = '';
+                    document.getElementById('city').value             = '';
+                    document.getElementById('district').value         = '';
+                    document.getElementById('state').value            = '';
+                    document.getElementById('region').value           = '';
+                    document.getElementById('dispatchDays').value     = '';
+                    document.getElementById('salesExecutive').value   = '';
+                    document.getElementById('clientType').value       = '';
+                    document.getElementById('creditDays').value       = '';
+                    document.getElementById('phoneNo').value          = '';
+                    document.getElementById('parentDealerName').value = '';
+                    document.getElementById('parentDealerCode').value = '';
+                }
+            });
+        }
+
+        function setClientData(data) {
+            clientData = data;
+            const dl = document.getElementById('clientNameList');
+            if (!dl) return;
+            dl.innerHTML = '';
+            clientData.forEach(row => {
+                if (row[1]) {
+                    const opt = document.createElement('option');
+                    opt.value = buildClientLabel(row);
+                    dl.appendChild(opt);
+                }
+            });
+        }
+
+        // itemData row layout (0-indexed, matches Item Details columns A:K):
+        // 0 SKU Code | 1 Item Name | 2 Brand Name | 3 Category | 4 Under
+        // 5 Sub Category | 6 Paint Type | 7 Ltr/Kg | 8 Colour | 9 Status | 10 Scheme No.
+        function setItemData(data) {
+            itemData = data;
+            const dl = document.getElementById('itemListData');
+            dl.innerHTML = '';
+            itemData.forEach(row => {
+                const opt = document.createElement('option');
+                opt.value = row[1];
+                dl.appendChild(opt);
+            });
+            if (itemData.length > 0 && schemaList.length > 0 && document.querySelectorAll('.itemRow').length === 0) {
+                addItem();
+            }
+        }
+
+        function setSchemaList(list) {
+            schemaList = list;
+            const dl = document.getElementById('schemaListData');
+            dl.innerHTML = '';
+            schemaList.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                dl.appendChild(opt);
+            });
+            if (itemData.length > 0 && document.querySelectorAll('.itemRow').length === 0) {
+                addItem();
+            }
+        }
+
+        function setSalesPersons(list) {
+            const dl = document.getElementById('salesExecList');
+            dl.innerHTML = '';
+            list.forEach(name => {
+                if (name) {
+                    const opt = document.createElement('option');
+                    opt.value = name;
+                    dl.appendChild(opt);
+                }
+            });
+        }
+
+        // ---------------------------------------------------------------
+        // Refresh functions (no page reload). These ONLY re-pull the
+        // datalist source arrays (itemData/schemaList or clientData/sales
+        // list) and rebuild the relevant <datalist> options. They never
+        // touch any input's current value, so anything already typed or
+        // auto-filled in the form (order fields, item rows, etc.) stays
+        // exactly as it is.
+        // ---------------------------------------------------------------
+
+        async function refreshItemsAndSchemas() {
+            const btn = document.getElementById('refreshItemsBtn');
+            const original = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⟳ Refreshing...';
+            try {
+                const [items, schemas] = await Promise.all([
+                    callGet('getItemData'),
+                    callGet('getSchemas')
+                ]);
+
+                itemData = items;
+                const itemDl = document.getElementById('itemListData');
+                itemDl.innerHTML = '';
+                itemData.forEach(row => {
+                    const opt = document.createElement('option');
+                    opt.value = row[1];
+                    itemDl.appendChild(opt);
+                });
+
+                schemaList = schemas;
+                const schemaDl = document.getElementById('schemaListData');
+                schemaDl.innerHTML = '';
+                schemaList.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s;
+                    schemaDl.appendChild(opt);
+                });
+
+                setStatus('Items & schemas refreshed from sheet.', false);
+            } catch (err) {
+                setStatus('Item refresh failed: ' + err.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = original;
+            }
+        }
+
+        async function refreshDealersAndSales() {
+            const btn = document.getElementById('refreshDealersBtn');
+            const original = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⟳ Refreshing...';
+            try {
+                const [clients, salesPersons] = await Promise.all([
+                    callGet('getClientData'),
+                    callGet('getSalesPersons')
+                ]);
+
+                clientData = clients;
+                const clientDl = document.getElementById('clientNameList');
+                clientDl.innerHTML = '';
+                clientData.forEach(row => {
+                    if (row[1]) {
+                        const opt = document.createElement('option');
+                        opt.value = buildClientLabel(row);
+                        clientDl.appendChild(opt);
+                    }
+                });
+
+                const salesDl = document.getElementById('salesExecList');
+                salesDl.innerHTML = '';
+                salesPersons.forEach(name => {
+                    if (name) {
+                        const opt = document.createElement('option');
+                        opt.value = name;
+                        salesDl.appendChild(opt);
+                    }
+                });
+
+                setStatus('Dealers & sales executives refreshed from sheet.', false);
+            } catch (err) {
+                setStatus('Dealer refresh failed: ' + err.message, true);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = original;
+            }
+        }
+
+        function makeField(labelText, name, opts) {
+            opts = opts || {};
+            const wrap = document.createElement('div');
+            const label = document.createElement('label');
+            label.textContent = labelText;
+            wrap.appendChild(label);
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = name;
+            input.placeholder = opts.placeholder || labelText;
+            if (opts.readOnly) input.readOnly = true;
+            if (opts.list) input.setAttribute('list', opts.list);
+            wrap.appendChild(input);
+            return { wrap, input };
+        }
+
+        function addItem() {
+            const itemsDiv = document.getElementById('items');
+            const div = document.createElement('div');
+            div.className = 'itemRow';
+
+            const mainRow = document.createElement('div');
+            mainRow.className = 'itemRow-main';
+
+            const nameField = document.createElement('div');
+            nameField.innerHTML = '<label>Item Name *</label>';
+            const itemInput = document.createElement('input');
+            itemInput.setAttribute('list', 'itemListData');
+            itemInput.name = 'itemName';
+            itemInput.placeholder = 'Type to search...';
+            itemInput.required = true;
+            nameField.appendChild(itemInput);
+
+            const qtyField = document.createElement('div');
+            qtyField.innerHTML = '<label>Quantity *</label>';
+            const qtyInput = document.createElement('input');
+            qtyInput.type = 'number';
+            qtyInput.name = 'qty';
+            qtyInput.placeholder = 'Qty';
+            qtyInput.required = true;
+            qtyInput.min = 1;
+            qtyInput.addEventListener('wheel', function (e) { e.preventDefault(); });
+            qtyInput.addEventListener('input', updateTotalQty);
+            qtyField.appendChild(qtyInput);
+
+            // Scheme field sits right next to Quantity. It is always optional
+            // and starts out blank (NULL) - it is never auto-filled from the
+            // selected item, so the user picks/types it manually if needed.
+            const schemaField = document.createElement('div');
+            schemaField.innerHTML = '<label>Schema</label>';
+            const schemaInput = document.createElement('input');
+            schemaInput.setAttribute('list', 'schemaListData');
+            schemaInput.name = 'schema';
+            schemaInput.placeholder = 'Select/Type Schema';
+            schemaInput.value = '';
+            schemaField.appendChild(schemaInput);
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'remove-btn';
+            removeBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>';
+            removeBtn.onclick = () => {
+                if (document.querySelectorAll('.itemRow').length > 1) {
+                    div.remove();
+                    updateTotalQty();
+                } else {
+                    alert("At least one item is required.");
+                }
+            };
+
+            mainRow.appendChild(nameField);
+            mainRow.appendChild(qtyField);
+            mainRow.appendChild(schemaField);
+            mainRow.appendChild(removeBtn);
+
+            const detailsRow = document.createElement('div');
+            detailsRow.className = 'itemRow-details';
+
+            const sku        = makeField('SKU', 'sku', { readOnly: true });
+            const category    = makeField('Category', 'unit', { readOnly: true });
+            const brand       = makeField('Brand Name', 'brand', { readOnly: true });
+            const under       = makeField('Under', 'under', { readOnly: true });
+            const subCategory = makeField('Sub Category', 'subCategory', { readOnly: true });
+            const paintType    = makeField('Paint Type', 'paintType', { readOnly: true });
+            const ltrKg        = makeField('Ltr/Kg', 'ltrKg', { readOnly: true });
+            const colour       = makeField('Colour', 'colour', { readOnly: true });
+
+            [sku, category, brand, under, subCategory, paintType, ltrKg, colour]
+                .forEach(f => detailsRow.appendChild(f.wrap));
+
+            itemInput.oninput = function () {
+                const selected = itemData.find(r => r[1] === this.value);
+                if (selected) {
+                    sku.input.value        = selected[0] || '';
+                    category.input.value   = selected[3] || '';
+                    brand.input.value      = selected[2] || '';
+                    under.input.value      = selected[4] || '';
+                    subCategory.input.value = selected[5] || '';
+                    paintType.input.value  = selected[6] || '';
+                    ltrKg.input.value      = selected[7] || '';
+                    colour.input.value     = selected[8] || '';
+                    // Note: Schema is intentionally left untouched here -
+                    // it always defaults to NULL/blank and is set manually.
+                } else {
+                    sku.input.value = category.input.value = brand.input.value = under.input.value =
+                        subCategory.input.value = paintType.input.value = ltrKg.input.value =
+                        colour.input.value = '';
+                }
+            };
+
+            div.appendChild(mainRow);
+            div.appendChild(detailsRow);
+
+            itemsDiv.appendChild(div);
+        }
+
+        async function submitForm() {
+            const orderNumber    = document.getElementById('orderNumber').value.trim();
+            const orderDate      = document.getElementById('orderDate').value.trim();
+            const clientName     = document.getElementById('clientName').value.trim();
+            const clientCode     = document.getElementById('clientCode').value.trim();
+            const clientType     = document.getElementById('clientType').value.trim();
+            const phoneNo        = document.getElementById('phoneNo').value.trim();
+            const state          = document.getElementById('state').value.trim();
+            const district       = document.getElementById('district').value.trim();
+            const creditDays     = document.getElementById('creditDays').value.trim();
+            const modeOfPayment  = document.getElementById('modeOfPayment').value.trim();
+            const address        = document.getElementById('address').value.trim();
+            const leadTime       = document.getElementById('leadTime').value.trim();
+            const salesExecutive = document.getElementById('salesExecutive').value.trim();
+            const parentDealerName = document.getElementById('parentDealerName').value.trim();
+            const parentDealerCode = document.getElementById('parentDealerCode').value.trim();
+            const city            = document.getElementById('city').value.trim();
+            const region          = document.getElementById('region').value.trim();
+            const dispatchDays    = document.getElementById('dispatchDays').value.trim();
+
+            const missing = [];
+            if (!orderNumber)    missing.push('Order Number');
+            if (!orderDate)      missing.push('Order Date');
+            if (!clientName)     missing.push('Client Name');
+            if (!clientCode)     missing.push('Client Code (select a valid client from the list)');
+            if (!clientType)     missing.push('Category');
+            if (!phoneNo)        missing.push('Phone No.');
+            if (!state)          missing.push('State');
+            if (!district)       missing.push('District');
+            if (!creditDays)     missing.push('Credit Period');
+            if (!modeOfPayment)  missing.push('Mode of Payment');
+            if (!address)        missing.push('Address');
+            if (!leadTime)       missing.push('Lead Time');
+            if (!salesExecutive) missing.push('Sales Executive');
+            if (!city)           missing.push('City');
+            if (!region)         missing.push('Region');
+            if (!dispatchDays)   missing.push('Dispatch Days');
+
+            if (missing.length > 0) {
+                alert("Please fill the following required fields:\n• " + missing.join('\n• '));
+                return;
+            }
+
+            const itemRows = document.querySelectorAll('.itemRow');
+            if (itemRows.length === 0) {
+                alert("Please add at least one item.");
+                return;
+            }
+
+            const items = Array.from(itemRows).map(row => {
+                const schemaValue = row.querySelector('[name=schema]').value.trim();
+                return {
+                    name:        row.querySelector('[name=itemName]').value.trim(),
+                    sku:         row.querySelector('[name=sku]').value.trim(),
+                    unit:        row.querySelector('[name=unit]').value.trim(),
+                    brand:       row.querySelector('[name=brand]').value.trim(),
+                    under:       row.querySelector('[name=under]').value.trim(),
+                    subCategory: row.querySelector('[name=subCategory]').value.trim(),
+                    paintType:   row.querySelector('[name=paintType]').value.trim(),
+                    ltrKg:       row.querySelector('[name=ltrKg]').value.trim(),
+                    colour:      row.querySelector('[name=colour]').value.trim(),
+                    qty:         row.querySelector('[name=qty]').value,
+                    schema:      schemaValue === '' ? null : schemaValue
+                };
+            });
+
+            const missingQty = items.filter(i => i.name && (!i.qty || Number(i.qty) <= 0));
+            if (missingQty.length > 0) {
+                alert("Quantity missing or invalid for:\n• " + missingQty.map(i => i.name).join('\n• '));
+                return;
+            }
+
+            if (items.some(i => !i.name)) {
+                alert("Please select an item name for all rows.");
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = "Processing...";
+
+            try {
+                await callPost('submitOrder', {
+                    orderNumber, orderDate, clientCode, clientName, clientType,
+                    phoneNo, state, district, creditDays, modeOfPayment,
+                    address, leadTime, salesExecutive, items,
+                    parentDealerName, parentDealerCode, city, region, dispatchDays
+                });
+                alert("Order Submitted Successfully!");
+                window.location.reload();
+            } catch (err) {
+                alert("Error: " + err.message);
+                btn.disabled = false;
+                btn.textContent = "Submit Order";
+            }
+        }
+
+        window.onload = initialize;
+    </script>
+</body>
+
+</html>
